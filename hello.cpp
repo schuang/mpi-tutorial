@@ -14,3 +14,14 @@ int main(int argc, char *argv[])
     printf("hello world from MPI process %d of %d\n",rank,nproc);
     MPI_Finalize(); 
 }
+
+/* Sample output
+
+$ mpicxx hello.cpp 
+$ mpirun -n 4 ./a.out
+hello world from MPI process 2 of 4
+hello world from MPI process 1 of 4
+hello world from MPI process 0 of 4
+hello world from MPI process 3 of 4
+
+*/
