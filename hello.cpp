@@ -1,4 +1,4 @@
-/**
+/*
 
    MPI "hello world" program
 
@@ -18,10 +18,13 @@ int main(int argc, char *argv[])
 /* Sample output
 
 $ mpicxx hello.cpp 
+
 $ mpirun -n 4 ./a.out
 hello world from MPI process 2 of 4
 hello world from MPI process 1 of 4
 hello world from MPI process 0 of 4
 hello world from MPI process 3 of 4
 
-*/
+**********************************************************************/
+
+

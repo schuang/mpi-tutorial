@@ -1,7 +1,8 @@
 /*
-   Process #0 send an integer 99 to process #1 
-*/
+ 
+   MPI_Send & MPI_Recv example: process #0 send an integer 99 to process #1 
 
+*/
 #include <mpi.h>
 #include <stdio.h>
 int main(int argc, char** argv)
@@ -28,4 +29,17 @@ int main(int argc, char** argv)
   MPI_Finalize();
   return 0;
 }
+
+
+/* Sample output
+
+$ mpicxx send_recv.cpp 
+
+$ mpirun -n 2 ./a.out
+rank=1: before receiving x = 32764
+rank=1: after receiving x = -99
+
+********************************************************************/
+
+
 

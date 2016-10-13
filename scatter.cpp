@@ -5,7 +5,6 @@
   Note: for simplicity, we assume the global data size (N) is a multiple
         of number of processors (nproc).
 
-  written by Shao-Ching Huang
  */
 #include <mpi.h>
 #include <cstdio>

@@ -1,6 +1,6 @@
 /**
 
-  MPI_Gather use example
+  MPI_Gather example
 
 */
 #include <cstdio>
@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
 /* Sample output
 
 $ mpicxx gather.cpp 
+
 $ mpirun -n 4 ./a.out
 data_coll[0] = 0.000000
 data_coll[1] = 1.000000
@@ -80,4 +81,6 @@ data_coll[17] = 302.000000
 data_coll[18] = 303.000000
 data_coll[19] = 304.000000
 
-*/
+**********************************************************************/
+
+

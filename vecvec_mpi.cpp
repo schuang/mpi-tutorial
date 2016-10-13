@@ -1,3 +1,9 @@
+/*
+
+   MPI vector-vector inner product example
+
+/*
+
 #include <stdio.h>
 #include <mpi.h>
 int main(int argc, char *argv[])
@@ -40,3 +46,18 @@ int main(int argc, char *argv[])
     }
     MPI_Finalize();
 }
+
+/* Sample output
+
+$ mpicxx vecvec_mpi.cpp 
+
+$ mpirun -n 2 ./a.out
+MPI inner product x.y = 328350.000000
+
+$ mpirun -n 4 ./a.out
+MPI inner product x.y = 328350.000000
+
+*********************************************************************/
+
+
+

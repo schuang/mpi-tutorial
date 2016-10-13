@@ -1,6 +1,6 @@
-/**
+/*
 
-   Print processor name
+   Print processor (or host) name
 
 */
 #include <mpi.h>
@@ -15,3 +15,16 @@ int main(int argc, char *argv[])
     printf("rank = %d processor name = %s\n",rank,name);
     MPI_Finalize();
 } 
+
+/* Sample output
+
+$ mpicxx process_name.cpp 
+
+$ mpirun -n 2 ./a.out 
+rank = 1 processor name = mg
+rank = 0 processor name = mg
+
+*********************************************************************/
+
+
+

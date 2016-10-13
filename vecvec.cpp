@@ -1,3 +1,8 @@
+/*
+
+   Sequential vector-vector inner product
+
+*/
 #include <stdio.h>
 int main(int argc, char *argv[])
 {
@@ -20,3 +25,15 @@ int main(int argc, char *argv[])
     }
     printf("inner product x.y = %f\n", sum);
 }
+
+/*  Sample output
+
+$ g++ vecvec.cpp
+
+$ ./a.out
+inner product x.y = 328350.000000
+
+********************************************************************/
+
+
+

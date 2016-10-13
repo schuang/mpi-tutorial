@@ -1,6 +1,6 @@
-/**
+/*
 
-   MPI_Reduce (sum) use example
+   MPI_Reduce (sum) example : parallel sum of 1 to N
 
 */
 #include <cstdio>
@@ -56,3 +56,18 @@ int main(int argc, char *argv[])
 
     MPI_Finalize();
 }
+
+/* Sample output
+
+$ mpicxx reduce_sum.cpp 
+
+$ mpirun -n 2 ./a.out
+rank=0  result=55
+
+$ mpirun -n 5 ./a.out
+rank=0  result=55
+
+*********************************************************************/
+
+
+
