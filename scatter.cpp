@@ -66,3 +66,39 @@ int main(int argc, char *argv[])
 
     MPI_Finalize();
 }
+
+/* Sample output
+
+$ mpicxx scatter.cpp 
+
+$ mpirun -n 2 ./a.out 
+process 0 writting results to data.0
+process 1 writting results to data.1
+
+$ cat data.0
+# rank 0
+data[0] = 0
+data[1] = 1
+data[2] = 2
+data[3] = 3
+data[4] = 4
+data[5] = 5
+data[6] = 6
+data[7] = 7
+data[8] = 8
+data[9] = 9
+
+$ cat data.1
+# rank 1
+data[0] = 10
+data[1] = 11
+data[2] = 12
+data[3] = 13
+data[4] = 14
+data[5] = 15
+data[6] = 16
+data[7] = 17
+data[8] = 18
+data[9] = 19
+
+*/

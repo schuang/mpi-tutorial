@@ -1,3 +1,4 @@
 *.html
 *~
 a.out
+data.*
