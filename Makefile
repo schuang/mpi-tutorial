@@ -1,13 +1,15 @@
 CXX       = mpicxx
 CXXFLAGS  = -g -Wall
 EXE       = hello gather scatter mpi_version process_name \
-            reduce_sum
+            reduce_sum bcast
 
 all: $(EXE)
 
 hello: hello.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $<
 gather: gather.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $<
+bcast: bcast.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $<
 scatter: scatter.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $<
