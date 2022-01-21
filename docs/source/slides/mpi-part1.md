@@ -345,9 +345,12 @@ Intel MPI with Intel C compiler:
 ![](fig/intel-mpiicc.png)
 
 
-# Why does one want to build MPI on Hoffman2 Cluster?
+# Why would one want to install one's own MPI on Hoffman2 Cluster?
 
-- Build a custom version with features not enabled in the system-wide MPI installation
+- Build custom MPI with features not enabled in the system-wide MPI installation
+
+    - CUDA, AMD GPU, MPI/threading support
+    - Various compiler support (different versions of gcc, etc.)
 
 - Test a particular version of the MPI library
 
