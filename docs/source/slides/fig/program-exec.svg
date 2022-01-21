@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="24cm" height="7cm" viewBox="41 119 478 132" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffffff" x="42.6241" y="120" width="98" height="60"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="42.6241" y="120" width="98" height="60"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="91.6241" y="154.8">
+      <tspan x="91.6241" y="154.8">Source code</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="140.624" y1="150" x2="170.044" y2="150.392"/>
+    <polygon style="fill: #000000" points="177.544,150.492 167.478,155.358 170.044,150.392 167.611,145.359 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="177.544,150.492 167.478,155.358 170.044,150.392 167.611,145.359 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="180.624" y="121.1" width="85" height="60"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="180.624" y="121.1" width="85" height="60"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="223.124" y="155.9">
+      <tspan x="223.124" y="155.9">Compiler</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="414.374" y="120.926" width="98.5" height="59.0929"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="414.374" y="120.926" width="98.5" height="59.0929"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="463.624" y="155.272">
+      <tspan x="463.624" y="155.272">./a.out</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="266.609" y1="150.878" x2="296.58" y2="150.725"/>
+    <polygon style="fill: #000000" points="304.08,150.687 294.106,155.738 296.58,150.725 294.055,145.738 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="304.08,150.687 294.106,155.738 296.58,150.725 294.055,145.738 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="174.143" y="210.574" width="97.3" height="38"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="174.143" y="210.574" width="97.3" height="38"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="222.793" y="234.374">
+      <tspan x="222.793" y="234.374">header file(s)</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="309.28" y="211.713" width="66.3" height="38"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="309.28" y="211.713" width="66.3" height="38"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="342.43" y="235.513">
+      <tspan x="342.43" y="235.513">libraries</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="342.43" y1="211.713" x2="342.317" y2="190.161"/>
+    <polygon style="fill: #000000" points="342.278,182.662 347.33,192.635 342.317,190.161 337.33,192.688 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="342.278,182.662 347.33,192.635 342.317,190.161 337.33,192.688 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="222.793" y1="210.574" x2="223.015" y2="190.835"/>
+    <polygon style="fill: #000000" points="223.099,183.336 227.986,193.391 223.015,190.835 217.987,193.279 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="223.099,183.336 227.986,193.391 223.015,190.835 217.987,193.279 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="409.553" y="211.876" width="108.3" height="38"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="409.553" y="211.876" width="108.3" height="38"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="463.703" y="235.676">
+      <tspan x="463.703" y="235.676">shared libraries</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="463.703" y1="211.876" x2="463.648" y2="189.754"/>
+    <polygon style="fill: #000000" points="463.629,182.255 468.654,192.242 463.648,189.754 458.654,192.267 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="463.629,182.255 468.654,192.242 463.648,189.754 458.654,192.267 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="306.316" y="120.926" width="71.9" height="59.5"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="306.316" y="120.926" width="71.9" height="59.5"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="342.266" y="155.476">
+      <tspan x="342.266" y="155.476">Linker</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="378.216" y1="150.676" x2="404.638" y2="150.527"/>
+    <polygon style="fill: #000000" points="412.138,150.485 402.166,155.541 404.638,150.527 402.11,145.541 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="412.138,150.485 402.166,155.541 404.638,150.527 402.11,145.541 "/>
+  </g>
+</svg>
