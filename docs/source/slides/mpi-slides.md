@@ -731,6 +731,7 @@ mpirun -n 8 julia [some options] mycode.jl
 - For many problems, it is possible to come with a test case with a small number of processes manifesting the bug(s).
 
 - For best results, compile your code with debugging symbols included (`-g` option in GCC).
+    - Follow all good practice of using using `gdb`.
 
 - Example:
 
