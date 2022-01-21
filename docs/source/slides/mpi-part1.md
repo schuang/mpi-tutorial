@@ -1,6 +1,11 @@
 ---
-title: Running MPI programs
+title: |
+        Practical Parallel Scientific Computing:\
+        Running MPI Programs
 date: 2022-01-21
+institute: |
+            Computational Science Group \
+            UCLA Office of Advanced Research Computing
 author: Shao-Ching Huang
 ---
 
@@ -15,11 +20,13 @@ author: Shao-Ching Huang
 
 2. MPI Programming
 
-    - How to write an MPI code
+    - How to write basic MPI code
 
 3. Introducting to PETSc
 
-    - Writing MPI code for scientific computing
+    - Develop MPI code for scientific computing
+
+4. Paraview for Scientific Visulization
 
 ---
 
@@ -35,7 +42,7 @@ author: Shao-Ching Huang
 
 - [MPI 4.0](https://www.mpi-forum.org/docs/mpi-4.0/mpi40-report.pdf) released 2021 (1139 pages)
 
-- Enables portable parallel computing: from laptop computers to HPC clusters and supercomputers
+- Enables **portable** parallel computing: from laptop computers to HPC clusters and supercomputers
 
 
 
@@ -58,7 +65,7 @@ author: Shao-Ching Huang
 - Non-official interfaces exist in pratice, e.g. Python, R and Julia
 
 
-# An example
+# An example from MPI Standard 4.0
 
 ![](fig/mpi-standard-example.png){ height=75% }
 
@@ -130,18 +137,20 @@ source: [intel.com](intel.com)
 
 MPI is portable!
 
-- Your laptop or desktop computers $\rightarrow$ for development and testing
+- Your laptop or desktop computers $\Rightarrow$ for **development and initial testing**
 
-  Easy on Mac and Linux
-  
-  Easy with Docker or virtual machine on MS-Windows
+  Easy to do on Mac and Linux, or Docker/virtual machine on MS-Windows.
 
-- Hoffman2 Cluster, or any other HPC clusters $\rightarrow$ for medium-size runs
+- Hoffman2 Cluster, or any other HPC clusters $\Rightarrow$ for **medium-size runs**
 
-- Supercomputers (e.g. NSF or DOE supercomputer centers) $\rightarrow$ for hero runs!
+- Supercomputers (e.g. NSF or DOE supercomputer centers) $\Rightarrow$ for **hero runs!**
 
 - Yes, you can install MPI libraries independently on any computers without "root" permission.
 
+
+# Hoffman2 Cluster Job Types
+
+![](fig/hoffman2-job-types.png)
 
 
 # MPI on Hoffman2 Cluster
@@ -338,26 +347,26 @@ Intel MPI with Intel C compiler:
 
 # Why does one want to build MPI on Hoffman2 Cluster?
 
-- Build a custom version with options not enabled in the system-wide MPI installation
+- Build a custom version with features not enabled in the system-wide MPI installation
 
-- Test a particular version of MPI not available 
+- Test a particular version of the MPI library
 
-- Maintain your own software stack
+    - Some programs (e.g. research/community code) are picky about MPI library version/variants
+
+- Maintain your own stable software stack
 
 # Advice on Building MPI codes
 
-- Always use the same MPI library to build all of your codes (and the libraries they depend on)
+- Always use the same MPI library to build all components of your codes (and the libraries they depend on)!
 
-- Bad things could happen when you use different MPI versions/variants for different parts
+- Bad things could happen when you mix MPI versions/variants
 
     - You could get lucky but ... please don't.
 
-
 - For example, a user code `mycode.c` depends on PETSc (which depends on MPI) and MPI.
 
-    - Use the same MPI to build the PETSc library
-    - Use the same MPI to build your code (linked to PETSc etc.)
-    - When submitting the job to run, load the same MPI version/variant
+    - Use the same MPI to build PETSc and your code.
+    - When running the program, load the same MPI version/variant.
 
 
 # Running our first MPI program!
@@ -424,6 +433,110 @@ make install
 ```
 
 
+# Inspect library linking: Intel MPI {.allowframebreaks}
+
+Built wiht Intel/18.0.4
+
+```
+$ ldd osu_bw
+linux-vdso.so.1 =>  (0x00007ffe14309000)
+libmpicxx.so.12 => /u/local/compilers/intel/18.0.4/compilers_and_libraries_2018.5.274/linux/mpi/intel64/lib/libmpicxx.so.12 (0x00007f4df6848000)
+libmpifort.so.12 => /u/local/compilers/intel/18.0.4/compilers_and_libraries_2018.5.274/linux/mpi/intel64/lib/libmpifort.so.12 (0x00007f4df649f000)
+libmpi.so.12 => /u/local/compilers/intel/18.0.4/compilers_and_libraries_2018.5.274/linux/mpi/intel64/lib/libmpi.so.12 (0x00007f4df5810000)
+libdl.so.2 => /lib64/libdl.so.2 (0x00007f4df560c000)
+librt.so.1 => /lib64/librt.so.1 (0x00007f4df5404000)
+libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f4df51e8000)
+libstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007f4df4ee0000)
+libm.so.6 => /lib64/libm.so.6 (0x00007f4df4bde000)
+libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007f4df49c8000)
+libc.so.6 => /lib64/libc.so.6 (0x00007f4df45fa000)
+/lib64/ld-linux-x86-64.so.2 (0x00007f4df6a68000)
+```
+
+#  Inspect library linking: MPICH {.allowframebreaks}
+
+Built with MPICH/3.1
+
+```
+$ ldd osu_bw
+linux-vdso.so.1 =>  (0x00007fff9add4000)
+libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f08af2c7000)
+libmpicxx.so.12 => /u/local/apps/mpich/3.4.3/lib/libmpicxx.so.12 (0x00007f08af0a5000)
+libmpi.so.12 => /u/local/apps/mpich/3.4.3/lib/libmpi.so.12 (0x00007f08ae3b0000)
+libstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007f08ae0a8000)
+libm.so.6 => /lib64/libm.so.6 (0x00007f08adda6000)
+libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007f08adb90000)
+libc.so.6 => /lib64/libc.so.6 (0x00007f08ad7c2000)
+/lib64/ld-linux-x86-64.so.2 (0x00007f08af4e3000)
+libudev.so.1 => /lib64/libudev.so.1 (0x00007f08ad5ac000)
+libpciaccess.so.0 => /lib64/libpciaccess.so.0 (0x00007f08ad3a2000)
+libxml2.so.2 => /lib64/libxml2.so.2 (0x00007f08ad038000)
+libucp.so.0 => /u/local/apps/ucx/1.12.0/lib/libucp.so.0 (0x00007f08acd92000)
+libuct.so.0 => /u/local/apps/ucx/1.12.0/lib/libuct.so.0 (0x00007f08acb5b000)
+libucs.so.0 => /u/local/apps/ucx/1.12.0/lib/libucs.so.0 (0x00007f08ac901000)
+libucm.so.0 => /u/local/apps/ucx/1.12.0/lib/libucm.so.0 (0x00007f08ac6e6000)
+libdl.so.2 => /lib64/libdl.so.2 (0x00007f08ac4e2000)
+librt.so.1 => /lib64/librt.so.1 (0x00007f08ac2da000)
+libcap.so.2 => /lib64/libcap.so.2 (0x00007f08ac0d5000)
+libdw.so.1 => /lib64/libdw.so.1 (0x00007f08abe84000)
+libz.so.1 => /lib64/libz.so.1 (0x00007f08abc6e000)
+liblzma.so.5 => /lib64/liblzma.so.5 (0x00007f08aba48000)
+libattr.so.1 => /lib64/libattr.so.1 (0x00007f08ab843000)
+libelf.so.1 => /lib64/libelf.so.1 (0x00007f08ab62b000)
+libbz2.so.1 => /lib64/libbz2.so.1 (0x00007f08ab41b000)
+```
+
+
+#  Inspect library linking: Open MPI {.allowframebreaks}
+
+Built with OpenMPI
+
+```
+$ ldd osu_bw
+linux-vdso.so.1 =>  (0x00007ffe34274000)
+libmpi.so.40 => /u/local/mpi/openmpi/4.1.2/lib/libmpi.so.40 (0x00007f48b5ec6000)
+libstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007f48b5bbe000)
+libm.so.6 => /lib64/libm.so.6 (0x00007f48b58bc000)
+libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007f48b56a6000)
+libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f48b548a000)
+libc.so.6 => /lib64/libc.so.6 (0x00007f48b50bc000)
+libopen-rte.so.40 => /u/local/mpi/openmpi/4.1.2/lib/libopen-rte.so.40 (0x00007f48b4e05000)
+libopen-pal.so.40 => /u/local/mpi/openmpi/4.1.2/lib/libopen-pal.so.40 (0x00007f48b4af4000)
+libdl.so.2 => /lib64/libdl.so.2 (0x00007f48b48f0000)
+libudev.so.1 => /lib64/libudev.so.1 (0x00007f48b46da000)
+libpciaccess.so.0 => /lib64/libpciaccess.so.0 (0x00007f48b44d0000)
+librt.so.1 => /lib64/librt.so.1 (0x00007f48b42c8000)
+libutil.so.1 => /lib64/libutil.so.1 (0x00007f48b40c5000)
+libz.so.1 => /lib64/libz.so.1 (0x00007f48b3eaf000)
+/lib64/ld-linux-x86-64.so.2 (0x00007f48b61e5000)
+libcap.so.2 => /lib64/libcap.so.2 (0x00007f48b3caa000)
+libdw.so.1 => /lib64/libdw.so.1 (0x00007f48b3a59000)
+libattr.so.1 => /lib64/libattr.so.1 (0x00007f48b3854000)
+libelf.so.1 => /lib64/libelf.so.1 (0x00007f48b363c000)
+liblzma.so.5 => /lib64/liblzma.so.5 (0x00007f48b3416000)
+libbz2.so.1 => /lib64/libbz2.so.1 (0x00007f48b3206000)
+```
+
+# How does the program find the MPI library path?
+
+Recall:
+
+```
+$ which mpicc
+/u/local/apps/mpich/3.4.3/bin/mpicc
+
+$ mpicc -show
+gcc -std=gnu99 -std=gnu99 -I/u/local/apps/mpich/3.4.3/include 
+-L/u/local/apps/mpich/3.4.3/lib 
+-Wl,-rpath -Wl,/u/local/apps/mpich/3.4.3/lib 
+-Wl,--enable-new-dtags -lmpi
+```
+
+Therefore, the MPI library path can be found without using `LD_LIBRARY_PATH`.
+
+Similarily for other MPI variants and libraries.
+
+
 # Infiniband networking for running OSU benchmarks
 
 We will use two compute nodes with Intel E5-2670 CPUs with Infiniband FDR networking.
@@ -481,8 +594,26 @@ $ mpiexec -n 2 -machinefile mach a.out
 $ mpiexec -n 2 --mca btl tcp,self --mca pml ob1 -machinefile mach a.out
 ```
 
-![](../../../plots/ompi_latency_tcp_vs_ib.svg){ height=45% }
-![](../../../plots/ompi_bw_tcp_vs_ib.svg){ height=45% }
+![](../../../plots/ompi_latency_tcp_vs_ib.svg){ width=49% }
+![](../../../plots/ompi_bw_tcp_vs_ib.svg){ width=49% }
+
+
+# MPICH/UCX: FDR vs EDR Infiniband
+
+- FDR Infiniband (56 Gb/s): Intel E5-2670 v3 @ 2.30GHz
+- EDR Infiniband (100 Gb/s): Intel Gold 6240 @ 2.60GHz
+
+![](../../../plots/mpich_ibrate_latency.svg){ width=49% }
+![](../../../plots/mpich_ibrate_bandwidth.svg){ width=49% }
+
+
+
+# Performance reduction across IB switches
+
+Even with EDR Infiniband, performance is reduced when running MPI across IB leaf switches.
+
+![](../../../plots/mpich_bandwidth_cross_edr_switch.svg){ width=45% }
+![](../../../plots/mpich_latency_cross_edr_switch.svg){ width=45% }
 
 
 
@@ -510,9 +641,10 @@ n2 slots=1
 
 - We don't know in advance what compute nodes will be used until the job is dispatched
 
-- One may over-ride the process to use your own machine file
+- By default, the machine is constructed automatically
 
-- We will demonstrate how to do this in the job script on Hoffman2 Cluster
+    - One may use own machine file if needed (e.g. for benchmark purposes)
+    - Still needs to be compatible with job scheduling
 
 
 # Considerations when running MPI jobs
@@ -528,7 +660,7 @@ n2 slots=1
 
 - Use the same/similar CPUs to run the MPI job
 
-- Minimize scattering (if possible)
+- Minimize spreading across nodes (if possible)
 
 
 # Submitting a standard MPI job on Hoffman2 Cluster
@@ -758,6 +890,7 @@ mpirun -n 8 julia [some options] mycode.jl
 
     - Build code with MPI
     - Run code with MPI
+    - Minimize spreading across compute nodes when possible
 
 - Work the job scheduler
     - Understand/use machine file to control process distribution
@@ -777,3 +910,4 @@ mpirun -n 8 julia [some options] mycode.jl
 - [Intel 2018/MPI basic](https://www.intel.com/content/www/us/en/developer/articles/technical/tuning-the-intel-mpi-library-basic-techniques.html)
 
 - [Intel 2018/MPI developer reference (pdf)](https://jp.xlsoft.com/documents/intel/mpi/2018/intelmpi-2018-developer-reference-linux.pdf)
+
