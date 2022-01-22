@@ -438,7 +438,7 @@ make install
 
 # Inspect library linking: Intel MPI {.allowframebreaks}
 
-Built wiht Intel/18.0.4
+Built with Intel/18.0.4
 
 ```
 $ ldd osu_bw
