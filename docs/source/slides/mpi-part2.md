@@ -607,10 +607,41 @@ Consider the connectivity graph/map on process X:
     - `MPI_Send`, `MPI_Recv`, etc.
 
 
+## Summary
+
+- MPI standard defines the interface for data communication
+
+- The interfaces for different languages are slightly different, but follow the same principle
+
+    - classical interface: C/C++ & Fortran
+    - high-level languages: Python, Julia, R
+
+- MPI programming amounts to
+
+    - Partition the global problem
+
+    - Indexing (or parametrizing) the ghost regions
+
+        - The "effects" of converting a global problem into a bunch of local problems
+
+        - MPI communication "compensates" these effects
+
+    - Use the MPI functions to implement the communication
+
+        - Mapping your communication patterns to the right MPI functions
+
+    - Test, verify correctness and benchmark code performance
+
+
+
 
 ## References
 
-- Using MPI, by William Gropp, Ewing Lusk, Anthony Skjellum
+- Code examples: [https://github.com/schuang/mpi-tutorial](https://github.com/schuang/mpi-tutorial)
+
+- Using MPI, by William Gropp, Ewing Lusk, Anthony Skjellum [[Amazon link]](https://www.amazon.com/Using-MPI-Programming-Message-Passing-Engineering/dp/0262527391)
 - [MPI reference: C/C++ and Fortran](https://www.mpich.org/static/docs/v3.4.x/)
 - [MPI in Python: mpi4py](https://mpi4py.readthedocs.io/en/stable/index.html)
 - [MPI in Julia: MPI.jl](https://juliaparallel.github.io/MPI.jl/stable/)
+
+- [MPI in R](https://cran.r-project.org/web/packages/Rmpi/index.html)
