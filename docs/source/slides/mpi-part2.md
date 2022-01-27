@@ -535,8 +535,76 @@ $$
 ![](fig/pde1d-ghost-points.png){ height=70% }
 
 
-## Domain partition and associated communication
+##
 
+For multi-dimensional or more complex problems, the partition can be a bit messy but managable in most cases.
+
+Partition an "unstructured" graph/mesh into 4 parts:
+
+![](fig/mesh-partition.png){ height=70% }
+
+
+##
+
+
+
+Consider the connectivity graph/map on process X:
+
+::: columns
+
+:::: column
+
+| Global ID |   Neighbor list      |
+|-----------|----------------------|
+| 30        |   ...                |
+| 34        |   30, 21, 35, **68** |
+| 35        |   ...                |
+
+::::
+
+:::: column
+
+![](fig/mesh-partition-ghost-ids2.png){ height=50% }
+
+::::
+
+:::
+
+
+- The data associated with 30, 21, 35 are local to process X
+
+- The data of **68** is on another process
+
+    - Requires MPI communication!
+
+
+## General data layout
+
+
+![](fig/local-ghost-arrays.svg){ height=60% }
+
+
+- On each process, data structure contains both "local" and "ghost" data.
+
+- Use MPI communication to update/fill ghost data
+
+- Proceeds with "local" computation with the ghost data like in the sequential case
+
+## Data layout - general observations
+
+- When partitioning a global problem into multiple parts, "ghost" regions are created
+
+    - For some problems, there is no ghost region, i.e. the parts can be computed completely independently (no MPI communication!)
+
+- "Parallelizing" a problem amounts to figuring out:
+
+    - the ghost regions
+
+    - the indexings: to determine sending what data to which processes
+
+- MPI Programming: implement the data communication using MPI interface
+
+    - `MPI_Send`, `MPI_Recv`, etc.
 
 
 
