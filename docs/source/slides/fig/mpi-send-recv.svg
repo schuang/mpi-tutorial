@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="22cm" height="12cm" viewBox="139 27 431 234" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffffff" x="160" y="60" width="120" height="40"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="160" y="60" width="120" height="40"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="220" y="84.8">
+      <tspan x="220" y="84.8">x=-99</tspan>
+    </text>
+  </g>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="191.333" y="44.6667">
+    <tspan x="191.333" y="44.6667">Process 0</tspan>
+  </text>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="440" y="40">
+    <tspan x="440" y="40">Process 1</tspan>
+  </text>
+  <g>
+    <rect style="fill: #ffffff" x="400" y="60" width="120" height="40"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="400" y="60" width="120" height="40"/>
+    <text font-size="12.7998" style="fill: #ff0000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="460" y="84.8">
+      <tspan x="460" y="84.8">x=uninialized</tspan>
+    </text>
+  </g>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="540" y="80">
+    <tspan x="540" y="80">int x;</tspan>
+  </text>
+  <g>
+    <rect style="fill: #ffffff" x="140" y="140" width="160" height="38"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="140" y="140" width="160" height="38"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="220" y="163.8">
+      <tspan x="220" y="163.8">MPI_Send(&amp;x,...,1,...)</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="380" y="140" width="160" height="40"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="380" y="140" width="160" height="40"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="460" y="164.8">
+      <tspan x="460" y="164.8">MPI_Recv(&amp;x,...,0,...)</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="160" y="220" width="120" height="40"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="160" y="220" width="120" height="40"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="220" y="244.8">
+      <tspan x="220" y="244.8">x=-99</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="400" y="220" width="120" height="40"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="400" y="220" width="120" height="40"/>
+    <text font-size="12.7998" style="fill: #ff0000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="460" y="244.8">
+      <tspan x="460" y="244.8">x=-99</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="220" y1="100" x2="220" y2="128"/>
+    <polygon style="fill: #000000" points="215,128 220,138 225,128 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="215,128 220,138 225,128 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="460" y1="100" x2="460" y2="129"/>
+    <polygon style="fill: #000000" points="455,129 460,139 465,129 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="455,129 460,139 465,129 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="220" y1="178" x2="220" y2="209"/>
+    <polygon style="fill: #000000" points="215,209 220,219 225,209 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="215,209 220,219 225,209 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="460" y1="180" x2="460" y2="209"/>
+    <polygon style="fill: #000000" points="455,209 460,219 465,209 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="455,209 460,219 465,209 "/>
+  </g>
+  <g>
+    <polygon style="fill: #00ff00" points="302,153.667 342,153.667 342,148.667 382,158.667 342,168.667 342,163.667 302,163.667 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="302,153.667 342,153.667 342,148.667 382,158.667 342,168.667 342,163.667 302,163.667 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="302,153.667 342,153.667 342,148.667 382,158.667 342,168.667 342,163.667 302,163.667 "/>
+  </g>
+  <text font-size="12.7998" style="fill: #ff0000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="315" y="121.667">
+    <tspan x="315" y="121.667">data</tspan>
+    <tspan x="315" y="137.667">transfer</tspan>
+  </text>
+</svg>
