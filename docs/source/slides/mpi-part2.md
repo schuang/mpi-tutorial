@@ -62,14 +62,14 @@ author: Shao-Ching Huang
 
 - What the MPI library implementers should follow
 
-- The understanding helps users to write standard-conforming code
+- Helps users to write standard-conforming code
 
 - Non-official interfaces exist in pratice, e.g. Python, R and Julia
 
 
 
 
-## What an MPI code looks like?  C/C++ example
+## MPI C/C++ Example
 
 ```cpp
 #include <mpi.h>
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 }
 ```
 
-## Fortran example
+## MPI Fortran Example
 
 ```fortran
 program hello
@@ -99,10 +99,11 @@ program hello
 end
 ```
 
-## Python example
+## Python Example
 
 ```python
 from mpi4py import MPI
+
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
@@ -111,26 +112,33 @@ print("hello world from process ", rank, "of", size)
 
 
 
-## Julia example
+## Julia Example
 
 ```julia
 using MPI
-MPI.Init()
 
+MPI.Init()
 rank = MPI.Comm_rank(MPI.COMM_WORLD)
 nproc = MPI.Comm_size(MPI.COMM_WORLD)
 println("hello world, rank $rank of $nproc")
-
 MPI.Finalize()
 ```
 
-## General structure of MPI code
+## General Structure of a MPI code
 
-1. Header file/module/package
+1. Header file
+
+    - For C/C++/Fortran: header file for function prototypes
+
+    - For Python/Julia: loading the module/package
 
 2. Initialization (`MPI_Init`)
 
 3. The body of your parallel code (including functions, subroutines, etc)
+
+    - computation
+    
+    - communication (via MPI function calls)
 
 4. Finalize (`MPI_Finalize`)
 
@@ -140,21 +148,21 @@ MPI.Finalize()
 
 GNU compilers
 
-| Language | Compiler | MPI Compiler |
-|----------|----------|--------------|
-| C        |  `gcc`     |  `mpicc`      |
-| C++      |  `g++`    | `mpicxx`       |
-| Fortran 90  | `gfortran` | `mpif90`      |
-| Fortran 77  | `gfortran` | `mpif77`      |
+| Language    | Compiler   | MPI Compiler |
+|-------------|------------|--------------|
+| C           |  `gcc`     |  `mpicc`     |
+| C++         |  `g++`     | `mpicxx`     |
+| Fortran 90  | `gfortran` | `mpif90`     |
+| Fortran 77  | `gfortran` | `mpif77`     |
 
 
 Intel compilers
 
-| Language | Compiler | MPI Compiler |
-|----------|----------|--------------|
-| C        |  `icc`     | `mpiicc`       |
-| C++      |  `icpc`    | `mpiicpc`      |
-| Fortran  |  `ifort`   | `mpiifort`     |
+| Language | Compiler   | MPI            |  GCC + Intel MPI |
+|----------|------------|----------------|----------------|
+| C        |  `icc`     | `mpiicc`       | `mpicc`        |
+| C++      |  `icpc`    | `mpiicpc`      | `mpicxx`       |
+| Fortran  |  `ifort`   | `mpiifort`     | `mpif90`       |
 
 
 ## Compiling and linking
@@ -201,6 +209,14 @@ hello world from MPI process 3 of 4
 
 
 
+
+## Sending an integer from process 0 to process 1
+
+![](fig/mpi-send-recv.svg){ width=70% }
+
+
+
+
 ## Sending an interger from process 0 to process 1
 
 ```c
@@ -216,7 +232,7 @@ if (rank == 0) {
 ```
 
 
-[Original code: send_recv.c](https://github.com/schuang/mpi-tutorial/blob/master/c/send_recv.cpp)
+[[Complete code: send_recv.c]](https://github.com/schuang/mpi-tutorial/blob/master/c/send_recv.cpp)
 
 ##
 
@@ -228,22 +244,12 @@ rank=1: after receiving x = -99
 
 
 
-## Sending an integer from process 0 to process 1
-
-![](fig/mpi-send-recv.svg){ width=70% }
-
-
-
 
 
 ## Julia version
 
-Same idea, just a bit cleaner/different syntax
-
 
 ```julia
-
-
 pid = MPI.Comm_rank(MPI.COMM_WORLD)
 nproc = MPI.Comm_size(MPI.COMM_WORLD)
 ...
@@ -254,13 +260,13 @@ else pid == 1
 end
 ```
 
-## Observations
+## Observations: `MPI_Send` and `MPI_Recv`
 
 - Each (MPI) process has its own independent memory address space
 
-    - Nothing is "shared" among the processes in MPI
+    - Nothing is "shared" among the processes in MPI; explicit communication is required
 
-    - Explicit communication is required to exchange any data
+    - All processes run the same "copy" of the executable (e.g. a.out)
 
 - MPI processes are identified by the "rank" (0, 1, ..., $N_p-1$)
 
@@ -271,24 +277,25 @@ end
 
 - Both the sending and receiving processes need to call MPI functions
 
-    - `MPI_Send(...)`
+    - `MPI_Send(...)` on the sending process
 
-    - `MPI_Recv(...)`
+    - `MPI_Recv(...)` on the receiving process
 
-- MPI-3 defines the one-sided communication interface, but here we will stick to the basics
+    - MPI-3 defines the one-sided communication interface, but here we will stick to the basics
+
 
 
 ## Common patterns in MPI communication
 
-- No-communication/informational calls (e.g. `MPI_Comm_size()`)
+1. No-communication/informational calls (e.g. `MPI_Comm_size()`)
 
-- One to one (point to point) communication
+2. One to one (point to point) communication
     
     - One process sends something to another
 
     - `MPI_Send()`/`MPI_Recv()` and their variants (e.g. `MPI_Isend`)
 
-- Collective communication
+3. Collective communication
 
     - one to many: `MPI_Bcast()` or `MPI_Scatter()`
 
@@ -296,7 +303,12 @@ end
 
     - many to many: `MPI_Alltoall()`
 
-If you know `MPI_Send` and `MPI_Recv` (or their variants), you could implement collective communication youself, but using the (algorithmically optimized) MPI collective communication functions is recommended.
+If you understand `MPI_Send` and `MPI_Recv` (or their variants), you could implement collective communication youself, but using the (algorithmically optimized) MPI collective communication functions is recommended.
+
+## MPI Broadcasting example
+
+![](fig/mpi-bcast.svg){ height=80% }
+
 
 ## Broadcasting example
 
@@ -316,12 +328,9 @@ MPI_Bcast(x,3,MPI_INT,0,MPI_COMM_WORLD);
 
 [full code: bcast.c](https://github.com/schuang/mpi-tutorial/blob/master/c/bcast.cpp)
 
-## MPI Broadcasting
-
-![](fig/mpi-bcast.svg){ height=80% }
 
 
-## MPI Gather: Gather data from all processes into one process
+## MPI Gather: data from all processes into one process
 
 ![](fig/mpi-gather.svg){ height=30% }
 
@@ -338,7 +347,7 @@ MPI_Gather(data,          /* send buffer (data source) */
 ```
 [full code: gather.c](https://github.com/schuang/mpi-tutorial/blob/master/c/gather.cpp)
 
-## MPI_Scatter
+## MPI_Scatter: distribute data among processes
 
 ![](fig/mpi-scatter.svg){ height=30% }
 
@@ -364,11 +373,15 @@ MPI_Scatter(data_src,       /* send buffer (data source) */
 
 - MPI interface was originally defined for C and Fortran77 languages
 
-- Data types are required in MPI communication functions
+- Data types are required in MPI communication functions, e.g.
+
+    ```
+    MPI_Send(&x, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
+    ```
 
 - MPI defines data types mapped to types in programming languages
 
-- MPI interfaces for high level languages (Python, Julia, and R) are "cleaner" because some of the information is embedded in the data itself, e.g.
+- High level languages (Python, Julia, and R) have "cleaner" MPI interface because some of attributes are embedded in the data so they don't need to be specified, e.g.
 
     - array size
 
@@ -377,9 +390,9 @@ MPI_Scatter(data_src,       /* send buffer (data source) */
 
 ## MPI C/C++ data type examples
 
-| C types | MPI Types |  comments  |
-|---------|-----------|------------|
-| `int`     |  MPI_INT  |   32-byte integer |
+| C/C++ types | MPI Types |  data size  |
+|-------------|-----------|------------|
+| `int`       |  MPI_INT  |   32-byte integer |
 | `long long int` | MPI_LONG_LONG_INT | 64-byte integer |
 |`float`    | MPI_FLOAT |   32-byte floating point |
 | `double`  | MPI_DOUBLE |  64-byte floating point |
@@ -394,7 +407,7 @@ MPI_Scatter(data_src,       /* send buffer (data source) */
 | Fortran types | MPI Types | comments |
 |---------------|-----------|----------|
 | `integer`       | MPI_INTEGER | 32-byte integer |
-| `integer*8`     | MPIINTEGER8 | 64-byte integer | 
+| `integer*8`     | MPI_INTEGER8 | 64-byte integer | 
 | `real`          | MPI_REAL    | 32-byte integer |
 | `double precision` | MPI_DOUBLE_PRECISION | 64-byte integer |
 | `complex` | MPI_COMPLEX | 32*2-byte complex |
@@ -416,10 +429,15 @@ MPI_Scatter(data_src,       /* send buffer (data source) */
 
 - Once defined, the derived data types are used like the built-in types.
 
+
 ## `MPI_Send`
 
-- MPI standard 
-    ```MPI_Send(buf, count, data_type, dest, tag, comm)```
+![](fig/mpi_send_interface_c.png)
+
+## `MPI_Send`
+
+
+```MPI_Send(buf, count, data_type, dest, tag, comm)```
 
 - C/C++ example
 
@@ -439,9 +457,8 @@ MPI_Scatter(data_src,       /* send buffer (data source) */
 
 ## `MPI_Recv`
 
-- MPI standard
 
-    `MPI_Recv(buf, count, datatype, src, tag, comm, status)`
+`MPI_Recv(buf, count, datatype, src, tag, comm, status)`
 
 - C/C++ example
 
@@ -466,21 +483,24 @@ MPI_Scatter(data_src,       /* send buffer (data source) */
 
 - MPI has hundreds of functions
 
-    - Mostly likely you need only a small subset of them
+    - In many cases, one needs only a small subset of them (around 10-20)
 
-- Variations of the "same" functionality
+- Heads up for the variations of "similar" functionalities, but with better performance
 
     - `MPI_Send()` (blocking) vs. `MPI_Isend()` (non-blocking)
 
+    - Code may be a bit more complex, but the performance or scalability gain may pay off
+
 - The interface is quite consistent
 
-    - Once you get passed the first few MPI functions, the rest is "easy" to follow
+    - Once you get passed the first few MPI functions, the rest $O(100)$ are "easy" to follow
 
 
-# How to construct an MPI program
+# How to construct an MPI program (by examples)
 
-## Consider solving a 1-D heat equation PDE
+## 1-D heat equation (as an example)
 
+Math model -- partial differential equation in space $x$ and time $t$:
 $$
 \frac{\partial \phi}{\partial x} = \alpha\frac{\partial^2 \phi}{\partial x^2}
 $$
@@ -496,7 +516,7 @@ $$
 We are going to update $\phi$ at every time step by
 
 $$
-\phi^{n+1}_{i} = \beta\phi^{n}_{i} + (1-2\beta)\phi^{n}_{i} + \beta\phi^{n}_{i-1}
+\phi^{n+1}_{i} = \beta\phi^{n}_{i-1} + (1-2\beta)\phi^{n}_{i} + \beta\phi^{n}_{i+1}
 $$
 
 
@@ -507,8 +527,14 @@ $$
 Update $\phi$ for $i=2$ to $N-1$ in every time step:
 
 $$
-\phi^{n+1}_{i} = \beta\phi^{n}_{i} + (1-2\beta)\phi^{n}_{i} + \beta\phi^{n}_{i-1}
+\phi^{n+1}_{i} = \beta\phi^{n}_{i-1} + (1-2\beta)\phi^{n}_{i} + \beta\phi^{n}_{i+1}
 $$
+
+Key observation:
+
+To update $\phi_i$, we need the data from its "neighbors": $\phi_{i-1}$ and $\phi_{i+1}$.
+
+$\Rightarrow$ The operations are localized, but not completely indepedent among  $\phi_i$ and $\phi_j$
 
 ## Computational Grid - MPI version
 
@@ -516,11 +542,11 @@ $$
 
 - Each process updates its own portion
 
-    - process 0 updates i from 2 to 5, process updates i from 6 to 9, etc.
+    - process 0 updates i from 2 to 5, process 1 updates i from 6 to 9, etc.
 
     - parallel computing!
 
-- What happens to $\phi_5$ on process 0 that needs to $\phi_6$ on process 1?
+- What happens to $\phi_5$ on process 0 that needs $\phi_6$ on process 1?
 
     - Processes do not *automatically* share data with other processes
 
@@ -529,19 +555,19 @@ $$
 
 ## Ghost points
 
-![](fig/pde1d-grid-mpi.png){ height=20% }
+![](fig/pde1d-grid-mpi-local-indexing.png){ height=20% }
 
 
 ![](fig/pde1d-ghost-points.png){ height=70% }
 
 
-##
+## An Unstructured Example
 
-For multi-dimensional or more complex problems, the partition can be a bit messy but managable in most cases.
+For multi-dimensional or more complex problems, the partition can appear "messy" but managable in most cases.
 
 Partition an "unstructured" graph/mesh into 4 parts:
 
-![](fig/mesh-partition.png){ height=70% }
+![](fig/mesh-partition.png){ height=65% }
 
 
 ##
@@ -556,6 +582,7 @@ Consider the connectivity graph/map on process X:
 
 | Global ID |   Neighbor list      |
 |-----------|----------------------|
+| ...       |   ...                |
 | 30        |   ...                |
 | 34        |   30, 21, 35, **68** |
 | 35        |   ...                |
@@ -578,21 +605,23 @@ Consider the connectivity graph/map on process X:
     - Requires MPI communication!
 
 
-## General data layout
+## Data layout and communication
 
 
 ![](fig/local-ghost-arrays.svg){ height=60% }
 
 
-- On each process, data structure contains both "local" and "ghost" data.
+- The data structure ("local array") contains the "internal" and "ghost" parts
 
 - Use MPI communication to update/fill ghost data
 
-- Proceeds with "local" computation with the ghost data like in the sequential case
+- With ghost data, computational may proceed locally similiar to the sequential case
 
 ## Data layout - general observations
 
-- When partitioning a global problem into multiple parts, "ghost" regions are created
+- Computers can only perform local (in-memory) computations
+
+- When partitioning a global problem, "ghost" regions are created to compensate the effects of partitioning
 
     - For some problems, there is no ghost region, i.e. the parts can be computed completely independently (no MPI communication!)
 
