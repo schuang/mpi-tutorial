@@ -496,7 +496,10 @@ MPI_Scatter(data_src,       /* send buffer (data source) */
     - Once you get passed the first few MPI functions, the rest $O(100)$ are "easy" to follow
 
 
-# How to construct an MPI program (by examples)
+
+# Parallelization (by examples)
+
+
 
 ## 1-D heat equation (as an example)
 
@@ -668,9 +671,9 @@ Consider the connectivity graph/map on process X:
 
 - Code examples: [https://github.com/schuang/mpi-tutorial](https://github.com/schuang/mpi-tutorial)
 
-- Using MPI, by William Gropp, Ewing Lusk, Anthony Skjellum [[Amazon link]](https://www.amazon.com/Using-MPI-Programming-Message-Passing-Engineering/dp/0262527391)
+- Using MPI, by Gropp, Lusk, and Skjellum [[Amazon link]](https://www.amazon.com/Using-MPI-Programming-Message-Passing-Engineering/dp/0262527391)
 - [MPI reference: C/C++ and Fortran](https://www.mpich.org/static/docs/v3.4.x/)
-- [MPI in Python: mpi4py](https://mpi4py.readthedocs.io/en/stable/index.html)
-- [MPI in Julia: MPI.jl](https://juliaparallel.github.io/MPI.jl/stable/)
+- [MPI in Python: `mpi4py`](https://mpi4py.readthedocs.io/en/stable/index.html)
+- [MPI in Julia: `MPI.jl`](https://juliaparallel.github.io/MPI.jl/stable/)
 
 - [MPI in R](https://cran.r-project.org/web/packages/Rmpi/index.html)
