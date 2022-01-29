@@ -392,12 +392,12 @@ MPI_Scatter(data_src,       /* send buffer (data source) */
 
 | C/C++ types | MPI Types |  data size  |
 |-------------|-----------|------------|
-| `int`       |  MPI_INT  |   32-byte integer |
-| `long long int` | MPI_LONG_LONG_INT | 64-byte integer |
-|`float`    | MPI_FLOAT |   32-byte floating point |
-| `double`  | MPI_DOUBLE |  64-byte floating point |
-| `float _Complex` | MPI_C_COMPLEX | 32*2-byte complex number |
-| `double _Complex` | MPI_C_DOUBLE_COMPLEX | 64*2-byte complex number |
+| `int`       |  MPI_INT  |   32-bit integer |
+| `long long int` | MPI_LONG_LONG_INT | 64-bit integer |
+|`float`    | MPI_FLOAT |   32-bit floating point |
+| `double`  | MPI_DOUBLE |  64-bit floating point |
+| `float _Complex` | MPI_C_COMPLEX | 32*2-bit complex number |
+| `double _Complex` | MPI_C_DOUBLE_COMPLEX | 64*2-bit complex number |
 
 
 [See the full list](https://www.mpich.org/static/docs/v3.3/www3/Constants.html)
@@ -406,12 +406,12 @@ MPI_Scatter(data_src,       /* send buffer (data source) */
 
 | Fortran types | MPI Types | comments |
 |---------------|-----------|----------|
-| `integer`       | MPI_INTEGER | 32-byte integer |
-| `integer*8`     | MPI_INTEGER8 | 64-byte integer | 
-| `real`          | MPI_REAL    | 32-byte integer |
-| `double precision` | MPI_DOUBLE_PRECISION | 64-byte integer |
-| `complex` | MPI_COMPLEX | 32*2-byte complex |
-| `complex*16` | MPI_DOUBLE_COMPLEX | 64*2-byte complex |
+| `integer`       | MPI_INTEGER | 32-bit integer |
+| `integer*8`     | MPI_INTEGER8 | 64-bit integer | 
+| `real`          | MPI_REAL    | 32-bit integer |
+| `double precision` | MPI_DOUBLE_PRECISION | 64-bit integer |
+| `complex` | MPI_COMPLEX | 32*2-bit complex |
+| `complex*16` | MPI_DOUBLE_COMPLEX | 64*2-bit complex |
 
 [See the full list](https://www.mpich.org/static/docs/v3.3/www3/Constants.html)
 
