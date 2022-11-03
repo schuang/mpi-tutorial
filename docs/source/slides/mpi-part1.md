@@ -14,13 +14,7 @@ author: Shao-Ching Huang
 
 1. Running MPI programs
 
-    - Basics, how processes work
-    
-    - Different MPI implementations, runtime systems
-
-    - From personal computer to HPC clusters and beyond
-
-    - Integrate with the job scheduler (e.g. Hoffman2 Cluster)
+    - How MPI programs and its runtime environment work
 
 2. MPI Programming
 
@@ -28,27 +22,27 @@ author: Shao-Ching Huang
 
 3. Introducting to PETSc
 
-    - Develop parallel/MPI code for science problems, simplified
+    - Develop parallel/MPI code for solving science problems, simplified
 
-4. Solving PDEs on Parallel Computers
+4. Solving Partial Differential Equations on Parallel Computers
 
     - Case studies and examples of writing parallel PDE solvers
 
 ---
 
 
-# Plan of attack
+# Today's plan of attack
 
-- MPI brief introduction (what, why, how)
+- MPI brief introduction
 - Launching MPI processes
-    - Controlling process distribution
-    - Specifying file paths
-- How to run MPI jobs on Hoffman2 Cluster
+    - Controlling process distribution: machinefile, integration with the job scheduler
+    - Managing shared library paths
+- Examples of running MPI jobs on Hoffman2 Cluster
     - Some considerations and suggested practice
-- Observations of running a small MPI programs
+- Observations from a case study
 - Running MPI-based Python, Julia...
-- Debugging MPI programs using gdb
-- Installing your own MPI lirbaries
+- Debugging MPI programs using `gdb`
+- Installing your own MPI library (without system admin's help)
 
 Goal: understanding how things work so one can trouble shoot when problems occur.
 
@@ -80,9 +74,7 @@ Goal: understanding how things work so one can trouble shoot when problems occur
 
 - Define the C/C++ and Fortran interfaces
 
-    - The MPI libraries ("implementatoins") should conform to the standard
-
-- MPI implementers follow the standard
+- The MPI libraries ("implementatoins") should conform to the standard
 
 - Understanding the standard helps users to write standard-conforming code
 
@@ -98,7 +90,7 @@ from [MPI standard 4.0, p. 54](https://www.mpi-forum.org/docs/mpi-4.0/mpi40-repo
 
 
 
-# MPI implementations (a.k.a. MPI library)
+# MPI implementations (a.k.a. "MPI library")
 
 Two popular MPI implementations (among others):
 
@@ -108,20 +100,22 @@ Two popular MPI implementations (among others):
     
   - [MVAPICH](https://mvapich.cse.ohio-state.edu/downloads/)
 
-- [**Open MPI**](https://www.open-mpi.org/software/ompi/) (open source)
+- [**Open MPI**](https://www.open-mpi.org/software/ompi/) (open source) $\rightarrow$ not to be confused with OpenMP
 
-    - not to be confused with OpenMP
+Your MPI source code remains the same no matter which implementation you use.
 
-Your MPI source code will/should remain the same no matter which implementation you use.
+The usage of the runtime system may be slightly different. (more on this later)
 
-Their runtime systems can be slightly different. (more on this later)
-
-You can install these on your PC or cluster account (without root permission)
+You can install these on your PC or cluster account without root permission (more on this later)
 
 
 # How a typical (sequential) program is compiled and run
 
-![](fig/program-exec.svg){ width=80% }
+```
+gcc myprogram.c
+```
+
+![](fig/program-exec.svg){ width=70% }
 
 
 
@@ -150,18 +144,18 @@ You can install these on your PC or cluster account (without root permission)
 
 # Launching the MPI processes
 
-To successfully run the MPI program, you need to control
+To successfully run a MPI program, a user needs to manage:
 
 1. MPI process distribution across the compute nodes
 
-    - The "default" works well for many cases
+    - The "default" may work well for many cases
     - You can over-ride this if needed (more on this later)
 
 2. Locations (paths) of the shared library files, including
 
     - MPI library
     - Your program (and all the library files it needs)
-
+    - The runtime environment may be different from your login environment
 
 These are the sources of mistakes in job failures.
 
@@ -177,39 +171,41 @@ Reminders:
 
 # Two ways to specify share library paths
 
-1. Use `LD_LIBRARY_PATH` environment variable $\rightarrow$ convenient
+1. Use `LD_LIBRARY_PATH` environment variable $\rightarrow$ convenient/flexible
 
     Be aware of the difference between
 
     ```
-    export LD_LIBRARY_PATH=/path/to/my/lib1:/path/to/my/lib2
+    export LD_LIBRARY_PATH=/path/to/lib1:/path/to/lib2
     ```
 
     and
 
     ```
-    export LD_LIBRARY_PATH=/path/to/my/lib1:/path/to/my/lib2:$LD_LIBRARY_PATH`
+    export LD_LIBRARY_PATH=/path/to/lib1:/path/to/lib2:$LD_LIBRARY_PATH
     ```
 
     Using "Modules" helps setting up (some of the) `LD_LIBRARY_PATH`.
 
 2. Embeded the path in the executable $\rightarrow$ robust
 
-    Does not need to specify `LD_LIBRARY_PATH` -- immune to environment changes
+    Does not need `LD_LIBRARY_PATH` -- immune to environment changes
 
-    Add this compiler/link option to embed the library path in the executable file:
+    To embed the library path in the executable file:
 
     ```
-    -Wl,-rpath,/path/to/my/lib -L/path/to/my/lib
+    gcc -Wl,-rpath,/path/to/lib -L/path/to/lib ...
     ```
 
 
 
-# Machine file -- controlling process distribution
+# Process distribution: "machine file"
 
-- A text file as an input to `mpirun`. Specifies how the MPI processes are distributed across compute nodes
+A text file as an input to `mpirun`, one line per "machine" (or compute node). 
 
-MPICH/Intel MPI format:
+Specifies how the MPI processes are distributed across compute nodes.
+
+MPICH (Intel MPI) format:
 ```
 n1:4
 n2:4
@@ -221,18 +217,19 @@ n1 slots=4
 n2 slots=4
 ```
 
-In practice, you don't need to specify the machine file if the HPC cluster (e.g. Hoffman2) uses a job scheduler, or if all processes are running on the same compute node as `mpirun/mpiexec`.
-
-However, you need to create your own machine file if you want to control the process distributio for the runs, e.g.
-    - Some MPI programs prefers certain process distribution (e.g. runs faster)
-    - Benchmark purposes
 
 
 # Machine file on HPC cluster
 
-- On an HPC cluster, the machine file is managed by the job scheduler (by default)
+On an HPC cluster, the machine file is managed by the job scheduler (by default)
 
-- Typically, we don't know in advance what compute nodes will be used until the job is dispatched
+However, you may need to create your own machine file when:
+
+- Some MPI programs prefers certain process distribution (e.g. runs faster)
+- Benchmark purposes
+
+We don't know in advance which compute nodes will be used until the job starts running
+
 
 
 
@@ -297,7 +294,7 @@ module load mpich/3.4    # or module load mpich/4.1 etc.
 mpirun -n $SLOTS a.out
 ```
 
-Note the `-l` option in the first line -- bash runs as a login shell.
+$\Rightarrow$ Note the `-l` option in the first line -- bash runs as a login shell.
 
 # 
 
@@ -438,11 +435,9 @@ Suppose we want to run 12 processes per node across two 36-core compute nodes.
 #$ -l h_data=2G,h_rt=24:00:00
 #$ -l arch=intel-gold-*
 #$ -l exclusive
-#$ -pe dc* 24
+#$ -pe dc* 72
 #$ -cwd
-
 module load mpich/3.4
-
 # constructing machinefile: 12 processes per node
 cat $PE_HOSTFILE |  awk '{print $1":12"}' > mach.$JOB_ID
 
@@ -450,7 +445,7 @@ cat $PE_HOSTFILE |  awk '{print $1":12"}' > mach.$JOB_ID
 mpirun -n 24 -machinefile mach.$JOB_ID a.out
 ```
 
-Note that use of `-l exclusive` option so we have "total control" of the two nodes. No sharing!
+$\Rightarrow$ Note:  `-l exclusive` so we have two whole nodes. No sharing!
 
 
 # Closer look at `PE_HOSTFILE`
@@ -464,7 +459,7 @@ Note that use of `-l exclusive` option so we have "total control" of the two nod
     #$ -j y
     #$ -o stdout.$JOB_ID
     #$ -l h_data=2G,h_rt=1:00:00
-    #$ -pe dc* 48
+    #$ -pe dc* 72
     #$ -cwd
 
     module load mpich/3.4
@@ -484,11 +479,11 @@ $ cat stdout.1380553
 
 ```
 $ cat pehostfile.1380553
-n6365 24 pod_ib56_xgold.q@n6365 <NULL>
-n7005 24 pod_ib56_xgold.q@n7005 <NULL>
+n1001 36 pod_gold.q@n1001 <NULL>
+n1005 36 pod_gold.q@n1005 <NULL>
 ```
 
-# For MPICH/Intel MPI
+# Manipulating runtime machinefile for MPICH/Intel MPI
 
 - Using all allocated cores:
     
@@ -496,11 +491,11 @@ n7005 24 pod_ib56_xgold.q@n7005 <NULL>
 cat $PE_HOSTFILE | awk '{print $1":"$2}'
 ```
 
-would be:
+would output:
 
 ```
-n6365:24
-n7005:24
+n1001:36
+n1005:36
 ```
 
 - Overriding the number of cores (normally with `-l exclusive`), say, 8 cores per node:
@@ -508,13 +503,13 @@ n7005:24
 ```
 cat $PE_HOSTFILE | awk '{print $1":8"}'
 ```
-would be
+would output:
 ```
-n6365:8
-n7005:8
+n1001:8
+n1005:8
 ```
 
-# For Open MPI
+# Manipulating runtime machinefile  for Open MPI
 
 Same idea, but different machine file format:
 
@@ -525,8 +520,8 @@ cat $PE_HOSTFILE | awk '{print $1" slots="$2}'
 ```
 
 ```
-n6365 slots=24
-n7005 slots=24
+n1001 slots=36
+n1005 slots=36
 ```
 
 - Overriding the number of cores, (normally with `-l exclusive`), say 8 cores per node:
@@ -536,8 +531,8 @@ cat $PE_HOSTFILE | awk '{print $1" slots=8"}'
 ```
 
 ```
-n6365 slots=8
-n7005 slots=8
+n1001 slots=8
+n1005 slots=8
 ```
 
 
@@ -548,7 +543,7 @@ n7005 slots=8
 
 
 
-# Using OpenMPI 4.1 on Hoffman2 Cluster
+# Using Open MPI 4.1 on Hoffman2 Cluster
 
 ```
 $ module load openmpi/4.1
@@ -662,7 +657,7 @@ Intel MPI with Intel C compiler:
 
 # Advice on Building MPI codes
 
-- Always use the same MPI library to build all components of your codes (and the libraries they depend on)!
+- Always use the same MPI library and compilers, as much as possible, to build all components of your program, including the libraries they depend on!
 
 - Bad things could happen when you mix MPI versions/variants
 
@@ -670,8 +665,8 @@ Intel MPI with Intel C compiler:
 
 - For example, a user code `mycode.c` depends on PETSc (which depends on MPI) and MPI.
 
-    - Use the same MPI to build PETSc and your code.
-    - When running the program, load the same MPI version/variant.
+    - Use the same MPI library to build PETSc and your code.
+    - When running the program, load the same MPI library at runtime.
 
 
 # Running our first MPI program!
@@ -860,7 +855,7 @@ Port 1:
         Link layer: InfiniBand
 ```
 
-Note: 56 Gb/s $\rightarrow$ 7 GB/s
+Note: 56 Gb/s $\approx$ 7 GB/s
 
 
 # MPICH with ucx (over Infiniband)
@@ -943,13 +938,13 @@ module load julia/x.x.x
 mpirun -n 8 julia [some options] mycode.jl
 ```
 
-# Debugging MPI code on Hoffman2 Cluster
+# Debugging MPI code 
 
 - Using the print statements may be a straightforward way to debug
 
 - Using a debugger is generally better
 
-- Hoffman2 Cluster does not have a parallel debugger (e.g. TotalView)
+- Hoffman2 Cluster does not have a parallel debugger (e.g. TotalView) :(
 
 - One can go quite far with `gdb` (a sequential debugger)
 
@@ -957,6 +952,8 @@ mpirun -n 8 julia [some options] mycode.jl
     - This is done easily with `xterm` (an X11 terminal program)
 
 # Attaching gdb to MPI processes with xterm
+
+This approach works well for a small number of processes. 
 
 - It may be difficult to manage too many xterm windows
 
@@ -980,20 +977,22 @@ mpirun -n 8 julia [some options] mycode.jl
 
 # Summary
 
-- Understand MPI software stack
+- Understand how MPI software stack works
 
-- Learn to install MPI on your computer(s)
+    - process distribution
+    - runtime library path management
 
-    - Easier to develop and debug than HPC clusters
 
 - Learn to use different MPI variants on Hoffman2 Cluster
 
     - Build code with MPI
     - Run code with MPI
     - Minimize spreading across compute nodes when possible
+    - Work the job scheduler
+        - overriding machine file if needed
 
-- Work the job scheduler
-    - Understand/use machine file to control process distribution
+- Learn to install MPI on your computer (optional)
+    - Easier to develop and debug than HPC clusters
 
 
 
