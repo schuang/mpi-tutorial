@@ -2,7 +2,7 @@
 title: |
         Practical Parallel Scientific Computing:\
         Running MPI Programs
-date: 2022-01-21
+date: 2022-11-03
 institute: |
             Computational Science Group \
             UCLA Office of Advanced Research Computing
@@ -14,82 +14,109 @@ author: Shao-Ching Huang
 
 1. Running MPI programs
 
-    - MPI basics, different MPI implementations (libraries), MPI runtime system
+    - Basics, how processes work
+    
+    - Different MPI implementations, runtime systems
 
-    - From personal computer to HPC clusters (e.g. Hoffman2 Cluster)
+    - From personal computer to HPC clusters and beyond
+
+    - Integrate with the job scheduler (e.g. Hoffman2 Cluster)
 
 2. MPI Programming
 
-    - How to write basic MPI code
+    - Writing your own MPI code
 
 3. Introducting to PETSc
 
-    - Develop MPI code for scientific computing
+    - Develop parallel/MPI code for science problems, simplified
 
-4. Paraview for Scientific Visulization
+4. Solving PDEs on Parallel Computers
+
+    - Case studies and examples of writing parallel PDE solvers
 
 ---
 
+
+# Plan of attack
+
+- MPI brief introduction (what, why, how)
+- Launching MPI processes
+    - Controlling process distribution
+    - Specifying file paths
+- How to run MPI jobs on Hoffman2 Cluster
+    - Some considerations and suggested practice
+- Observations of running a small MPI programs
+- Running MPI-based Python, Julia...
+- Debugging MPI programs using gdb
+- Installing your own MPI lirbaries
+
+Goal: understanding how things work so one can trouble shoot when problems occur.
+
 # What is MPI (Message Passing Interface)?
 
-- Standardized interface for distributed-memory communication in parallel scientific computing
+- Standardized programming **interface** for distributed-memory communication in parallel scientific computing
 
-- [MPI 1.0](https://www.mpi-forum.org/docs/mpi-1.3/mpi-report-1.3-2008-05-30.pdf) released in 1994 (245 pages)
+    - [MPI 1.0](https://www.mpi-forum.org/docs/mpi-1.3/mpi-report-1.3-2008-05-30.pdf) released in 1994 (245 pages)
 
-- [MPI 2.0](https://www.mpi-forum.org/docs/mpi-2.0/mpi2-report.pdf) released in 1997 (370 pages)
+    - [MPI 2.0](https://www.mpi-forum.org/docs/mpi-2.0/mpi2-report.pdf) released in 1997 (370 pages)
 
-- [MPI 3.0](https://www.mpi-forum.org/docs/mpi-3.1/mpi31-report.pdf) released 2012 (868 pages)
+    - [MPI 3.0](https://www.mpi-forum.org/docs/mpi-3.1/mpi31-report.pdf) released in 2012 (868 pages)
 
-- [MPI 4.0](https://www.mpi-forum.org/docs/mpi-4.0/mpi40-report.pdf) released 2021 (1139 pages)
+    - [MPI 4.0](https://www.mpi-forum.org/docs/mpi-4.0/mpi40-report.pdf) released in 2021 (1139 pages)
+
+
+- **Interface**: think "function calls" in programming languages
 
 - Enables **portable** parallel computing: from laptop computers to HPC clusters and supercomputers
 
 
-
 # What's in the MPI Standard?
 
-- The expected behavior of MPI function calls, e.g.
+- Define the expected behavior of MPI function calls, e.g.
 
     - data transfer (communication) between processes
 
-    - should an action be synchronized, or not, etc.
+    - Synchronized or asynchronized actions, etc.
 
-- The C/C++ and Fortran interfaces
+- Define the C/C++ and Fortran interfaces
 
     - The MPI libraries ("implementatoins") should conform to the standard
 
-- What the MPI library implementers should follow
+- MPI implementers follow the standard
 
-- The understanding helps users to write standard-conforming code
+- Understanding the standard helps users to write standard-conforming code
 
 - Non-official interfaces exist in pratice, e.g. Python, R and Julia
 
 
-# An example from MPI Standard 4.0
+# What does the standard look like?
+
+from [MPI standard 4.0, p. 54](https://www.mpi-forum.org/docs/mpi-4.0/mpi40-report.pdf)
 
 ![](fig/mpi-standard-example.png){ height=75% }
 
-source: [MPI standard 4.0, p. 54](https://www.mpi-forum.org/docs/mpi-4.0/mpi40-report.pdf)
 
 
-# MPI implementations (a.k.a. the MPI library/software)
 
-There are two popular MPI implementations (among others):
+# MPI implementations (a.k.a. MPI library)
 
-- [**MPICH**](https://www.mpich.org/downloads/) (open source, "government license")
+Two popular MPI implementations (among others):
+
+- [**MPICH**](https://www.mpich.org/downloads/) (open source)
     
-  [Intel MPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/mpi-library.html#gs.mpmlvx) (commercial)
+  - [Intel MPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/mpi-library.html#gs.mpmlvx) 
     
-  [MVAPICH](https://mvapich.cse.ohio-state.edu/downloads/) (open source, BSD license)
+  - [MVAPICH](https://mvapich.cse.ohio-state.edu/downloads/)
 
-- [**Open MPI**](https://www.open-mpi.org/software/ompi/) (open source, BSD license)
+- [**Open MPI**](https://www.open-mpi.org/software/ompi/) (open source)
 
+    - not to be confused with OpenMP
 
-Your MPI source code will/should remain the same no matter which one you use.
+Your MPI source code will/should remain the same no matter which implementation you use.
 
 Their runtime systems can be slightly different. (more on this later)
 
-
+You can install these on your PC or cluster account (without root permission)
 
 
 # How a typical (sequential) program is compiled and run
@@ -111,41 +138,118 @@ Their runtime systems can be slightly different. (more on this later)
 
 
 
-# The software stack schematic (overly simplified)
+# Software layers: a simplified view
 
 ![](fig/mpi-stack.svg){ height=70% }
 
 
-# UCX: Unified Communication X
-
-![](fig/ucx-architecture.jpg)
-
-source: [openucx.org](https://openucx.org)
 
 
 
-# Intel MPI - OFI/OFA
 
-![](fig/intel2019-switch-to-ofi.png)
 
-source: [intel.com](intel.com)
+# Launching the MPI processes
 
+To successfully run the MPI program, you need to control
+
+1. MPI process distribution across the compute nodes
+
+    - The "default" works well for many cases
+    - You can over-ride this if needed (more on this later)
+
+2. Locations (paths) of the shared library files, including
+
+    - MPI library
+    - Your program (and all the library files it needs)
+
+
+These are the sources of mistakes in job failures.
+
+#
+
+Reminders:
+
+- The runtime environment may not be the same as your interactive/terminal session. 
+
+- A job/run script is robust if everything is specified clearly (i.e. self-documented).
+
+
+
+# Two ways to specify share library paths
+
+1. Use `LD_LIBRARY_PATH` environment variable $\rightarrow$ convenient
+
+    Be aware of the difference between
+
+    ```
+    export LD_LIBRARY_PATH=/path/to/my/lib1:/path/to/my/lib2
+    ```
+
+    and
+
+    ```
+    export LD_LIBRARY_PATH=/path/to/my/lib1:/path/to/my/lib2:$LD_LIBRARY_PATH`
+    ```
+
+    Using "Modules" helps setting up (some of the) `LD_LIBRARY_PATH`.
+
+2. Embeded the path in the executable $\rightarrow$ robust
+
+    Does not need to specify `LD_LIBRARY_PATH` -- immune to environment changes
+
+    Add this compiler/link option to embed the library path in the executable file:
+
+    ```
+    -Wl,-rpath,/path/to/my/lib -L/path/to/my/lib
+    ```
+
+
+
+# Machine file -- controlling process distribution
+
+- A text file as an input to `mpirun`. Specifies how the MPI processes are distributed across compute nodes
+
+MPICH/Intel MPI format:
+```
+n1:4
+n2:4
+```
+
+OpenMPI format:
+```
+n1 slots=4
+n2 slots=4
+```
+
+In practice, you don't need to specify the machine file if the HPC cluster (e.g. Hoffman2) uses a job scheduler, or if all processes are running on the same compute node as `mpirun/mpiexec`.
+
+However, you need to create your own machine file if you want to control the process distributio for the runs, e.g.
+    - Some MPI programs prefers certain process distribution (e.g. runs faster)
+    - Benchmark purposes
+
+
+# Machine file on HPC cluster
+
+- On an HPC cluster, the machine file is managed by the job scheduler (by default)
+
+- Typically, we don't know in advance what compute nodes will be used until the job is dispatched
 
 
 
 # Where can you run MPI programs?
 
-MPI is portable!
+MPI programs are portable.
 
 - Your laptop or desktop computers $\Rightarrow$ for **development and initial testing**
 
-  Easy to do on Mac and Linux, or Docker/virtual machine on MS-Windows.
+  - Easy to do on Mac and Linux, or Docker/virtual machine on MS-Windows.
 
 - Hoffman2 Cluster, or any other HPC clusters $\Rightarrow$ for **medium-size runs**
 
-- Supercomputers (e.g. NSF or DOE supercomputer centers) $\Rightarrow$ for **hero runs!**
+- Supercomputers (e.g. NSF or DOE supercomputer centers) $\Rightarrow$ for **bigger runs**
 
-- Yes, you can install MPI libraries independently on any computers without "root" permission.
+
+You can install MPI libraries independently on any computers without "root" permission.
 
 
 # Hoffman2 Cluster Job Types
@@ -158,91 +262,289 @@ MPI is portable!
 There are 3 MPI libraries available on Hoffman2 cluster:
 
 ```
-$ module avail intel/18.0.4
+$ module avail intel/18.0.4                  # or: module avail intel
 --------------------- /u/local/Modules/modulefiles -----------
 intel/18.0.4
 ```
 
 ```
-$ module avail openmpi/4.1
+$ module avail openmpi/4.1                   # or: module avail openmpi
 -------------------- /u/local/Modules/modulefiles ------------
 openmpi/4.1
 ```
 
 ```
-$ module avail mpich
+$ module avail mpich                         # or: module avail mpich
 -------------------- /u/local/Modules/modulefiles ------------
 mpich/3.4(default)
 ```
 
 
 
-# Installing MPICH on your computer (example)
+# Running a standard MPI job on Hoffman2 Cluster
 
-[MPICH](https://www.mpich.org/downloads/) on Mac, Linux, or in a Linux Docker container or virtual machine on Windows:
-
-```
-wget http://www.mpich.org/static/downloads/3.4.1/mpich-3.4.1.tar.gz
-tar xfz mpich-3.4.1.tar.gz
-cd mpich-3.4.1
-
-./configure CC=gcc CXX=g++ F77=gfortran
----prefix=$HOME/sw/mpich \
---enable-fortran=all --enable-cxx \
---enable-wrapper-rpath --enable-shared \
---with-device=ch4
-
-make -j 4
-make install
-```
-
-(Some details may vary depending on your system...)
-
-
-# Installing OpenMPI on your computer (example)
-
-[Open MPI](https://www.open-mpi.org/software/ompi/v4.1/) on Mac, Linux, or in a Linux Docker container or virtual machine on Windows:
+Using `-pe dc*` allows the processes to distribute multiple nodes:
 
 ```
-wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.2.tar.gz
+#!/bin/bash -l
+#$ -j y
+#$ -o stdout.$JOB_ID
+#$ -l h_data=4G,h_rt=1:00:00
+#$ -pe dc* 32
+#$ -cwd
 
-tar xfz /u/local/downloads/openmpi/openmpi-4.1.2.tar.gz
-cd openmpi-4.1.2
-
-./configure CC=gcc CXX=g++ FC=gfortran \
-            --prefix=$HOME/sw/openmpi \
-             --enable-wrapper-rpath \
-             --enable-orterun-prefix-by-default
-
-make -j 4
-make install
+module load mpich/3.4    # or module load mpich/4.1 etc.
+mpirun -n $SLOTS a.out
 ```
-(Some details may vary depending on your system...)
+
+Note the `-l` option in the first line -- bash runs as a login shell.
+
+# 
+
+For small runs, use `-pe shared` so all processes run on ONE compute node:
+
+```
+#!/bin/bash -l
+#$ -j y
+#$ -o stdout.$JOB_ID
+#$ -l h_data=4G,h_rt=1:00:00
+#$ -pe shared 8
+#$ -cwd
+
+module load mpich/3.4
+mpirun -n $SLOTS a.out
+```
+
+Of course, ``(-pe shared)*(h_data)`` cannot exceed a compute node's memory size.
 
 
-# A note on high-speed networking on HPC clusters
+#
 
-To enable using the high-speed networking on HPC clusters, additional options are needed when building the MPI library.
+Alternatively (or traditionally):
 
-MPI performance is relatively poor without using the high-speed networking.
+```
+#!/bin/bash
+#$ -j y
+#$ -o stdout.$JOB_ID
+#$ -l h_data=4G,h_rt=1:00:00
+#$ -pe dc* 32
+#$ -cwd
 
-- MPICH on Hoffman2 Cluster built with "UCX":
+source /u/local/Modules/default/init/modules.sh   # enable Modules
+source $HOME/.bash_profile                        # optional
+module load mpich/3.4
+mpirun -n $SLOTS a.out
+```
+
+
+
+
+
+# A reminder for Windows users 1/3
+
+The job script needs to be a text file properly formatted on Linux. 
+
+If you transfer the job script from MS-Windows to Hoffman2 Cluster (Linux), you need to be aware of Windows' end of line characters (`\r\n`) can cause the script to fail on Linux which uses `\n`.
+
+To fix this, there are several options:
+
+- Run `dos2unix your_script.sh` on Hoffman2 cluster, before using the script.
+
+- Your text editors on MS-Windows may have a setting that can control this. For example, popular Windows text editors like Notepad++, VS-Code all support this.
+
+
+# A reminder for Windows users 2/3
+
+Use the `cat -v` command to quickly see if your job script contains Windows characters "`^M`".
+
+This script looks good:
+
+```
+$ cat -v hello1.sh
+#!/bin/bash
+
+echo "hello from hello.sh"
+```
+
+This one is bad -- note the Windows characters "`^M`":
+
+```
+$ cat -v hello2.sh
+#!/bin/bash^M
+^M
+echo "hello from hello.sh"^M
+```
+
+# A reminder for Windows users 3/3
+
+Fix it:
+```
+$ dos2unix hello2.sh
+dos2unix: converting file hello2.sh to Unix format ...
+
+$ cat -v hello2.sh
+#!/bin/bash
+
+echo "hello from hello.sh"
+```
+
+
+
+
+
+# Things to consider when running MPI jobs
+
+**Reminders**
+
+- The speed of an MPI job is determined by the slowest process
+
+- Hoffman2 Cluster has different CPU models
+
+
+**Suggested practice**
+
+- Use the same/similar CPUs to run the MPI job
+
+- Minimize spreading across nodes (when possible)
+
+
+
+
+
+# Specifying CPU types
+
+```
+#!/bin/bash -l
+#$ -j y
+#$ -o stdout.$JOB_ID
+#$ -l h_data=4G,h_rt=24:00:00
+#$ -l arch=intel-gold-*
+#$ -pe dc* 24
+#$ -cwd
+
+module load mpich/3.4
+mpirun -n $SLOTS a.out
+```
+
+
+# Specifying number of processes per node
+
+Suppose we want to run 12 processes per node across two 36-core compute nodes.
+
+```
+#!/bin/bash -l
+#$ -j y
+#$ -o stdout.$JOB_ID
+#$ -l h_data=2G,h_rt=24:00:00
+#$ -l arch=intel-gold-*
+#$ -l exclusive
+#$ -pe dc* 24
+#$ -cwd
+
+module load mpich/3.4
+
+# constructing machinefile: 12 processes per node
+cat $PE_HOSTFILE |  awk '{print $1":12"}' > mach.$JOB_ID
+
+# 12 procs per node for 24/12=2 nodes. 24 processes in total.
+mpirun -n 24 -machinefile mach.$JOB_ID a.out
+```
+
+Note that use of `-l exclusive` option so we have "total control" of the two nodes. No sharing!
+
+
+# Closer look at `PE_HOSTFILE`
+
+- The environment variable `$PE_HOSTFILE` contains information about node allocation for the parallel job.
+
+- Consider this script
 
     ```
-    ./configure CC=gcc CXX=g++ FC=gfortran F77=gfortran \
-    ...
-    --with-ucx=/u/local/apps/ucx/1.12 \
+    #!/bin/bash -l
+    #$ -j y
+    #$ -o stdout.$JOB_ID
+    #$ -l h_data=2G,h_rt=1:00:00
+    #$ -pe dc* 48
+    #$ -cwd
+
+    module load mpich/3.4
+    which mpiexec
+
+    cat $PE_HOSTFILE > pehostfile.$JOB_ID
     ```
 
-- OpenMPI on Hoffman2 Cluster built with "UCX":
+#
 
-    ```
-    ./configure CC=gcc CXX=g++ FC=gfortran \
-    --prefix=$INSTALL_DIR \
-    ...
-    --with-sge --without-verbs \
-    --with-ucx=/u/local/apps/ucx/1.12
-    ```
+After the run, we get two files:
+
+```
+$ cat stdout.1380553
+/u/local/apps/mpich/3.4.3/bin/mpiexec
+```
+
+```
+$ cat pehostfile.1380553
+n6365 24 pod_ib56_xgold.q@n6365 <NULL>
+n7005 24 pod_ib56_xgold.q@n7005 <NULL>
+```
+
+# For MPICH/Intel MPI
+
+- Using all allocated cores:
+    
+```
+cat $PE_HOSTFILE | awk '{print $1":"$2}'
+```
+
+would be:
+
+```
+n6365:24
+n7005:24
+```
+
+- Overriding the number of cores (normally with `-l exclusive`), say, 8 cores per node:
+
+```
+cat $PE_HOSTFILE | awk '{print $1":8"}'
+```
+would be
+```
+n6365:8
+n7005:8
+```
+
+# For Open MPI
+
+Same idea, but different machine file format:
+
+- Using all allocated cores:
+
+```
+cat $PE_HOSTFILE | awk '{print $1" slots="$2}'
+```
+
+```
+n6365 slots=24
+n7005 slots=24
+```
+
+- Overriding the number of cores, (normally with `-l exclusive`), say 8 cores per node:
+
+```
+cat $PE_HOSTFILE | awk '{print $1" slots=8"}'
+```
+
+```
+n6365 slots=8
+n7005 slots=8
+```
+
+
+
+
+
+
 
 
 
@@ -302,7 +604,7 @@ gcc -std=gnu99 -std=gnu99 -I/u/local/apps/mpich/3.4.3/include
 
 
 
-# Using Intel 18.04/MPI on Hoffman2 Cluster
+# Using Intel MPI on Hoffman2 Cluster
 
 
 Intel MPI integrate with different compilers under different commands:
@@ -345,7 +647,7 @@ Intel MPI with Intel C compiler:
 ![](fig/intel-mpiicc.png)
 
 
-# Why would one want to install one's own MPI on Hoffman2 Cluster?
+# Installing your own MPI on Hoffman2 Cluster?
 
 - Build custom MPI with features not enabled in the system-wide MPI installation
 
@@ -382,7 +684,7 @@ The code is relatively easy to understand without specific science disciplines.
 
 #
 
-Building the [OSU benchmark](https://mvapich.cse.ohio-state.edu/benchmarks/) with MPICH:
+Building the [OSU benchmark](https://mvapich.cse.ohio-state.edu/benchmarks/) with **MPICH**:
 
 ```
 tar xfz /u/local/downloads/osu-benchmarks/osu-micro-benchmarks-5.8.tgz
@@ -402,7 +704,7 @@ make install
 
 #
 
-Building the [OSU benchmark](https://mvapich.cse.ohio-state.edu/benchmarks/) with OpenMPI:
+Building the [OSU benchmark](https://mvapich.cse.ohio-state.edu/benchmarks/) with **Open MPI**:
 
 ```
 INSTALL_DIR=$HOME/osu-benchmarks/openmpi
@@ -415,12 +717,11 @@ module load openmpi/4.1
 
 make -j 4
 make install
-
 ```
 
 #
 
-Building the [OSU benchmark](https://mvapich.cse.ohio-state.edu/benchmarks/) with Intel MPI:
+Building the [OSU benchmark](https://mvapich.cse.ohio-state.edu/benchmarks/) with **Intel MPI**:
 
 ```
 INSTALL_DIR=$HOME/osu-benchmarks/intelmpi
@@ -522,7 +823,7 @@ libbz2.so.1 => /lib64/libbz2.so.1 (0x00007f48b3206000)
 
 # How does the program find the MPI library path?
 
-Recall:
+Recall the embedding of library paths:
 
 ```
 $ which mpicc
@@ -535,7 +836,7 @@ gcc -std=gnu99 -std=gnu99 -I/u/local/apps/mpich/3.4.3/include
 -Wl,--enable-new-dtags -lmpi
 ```
 
-Therefore, the MPI library path can be found without using `LD_LIBRARY_PATH`.
+Therefore, the MPI library path is found **without** using `LD_LIBRARY_PATH`.
 
 Similarily for other MPI variants and libraries.
 
@@ -619,210 +920,6 @@ Even with EDR Infiniband, performance is reduced when running MPI across IB leaf
 ![](../../../plots/mpich_latency_cross_edr_switch.svg){ width=45% }
 
 
-
-# Machine file
-
-- Specifies how the MPI processes are distributed across compute nodes
-
-- Don't need the machine file when all processes are on the same compute nodes (e.g. on your PC)
-
-MPICH/Intel MPI format:
-```
-n1:1
-n2:1
-```
-
-OpenMPI format:
-```
-n1 slots=1
-n2 slots=1
-```
-
-# Machine file on HPC cluster
-
-- On an HPC cluster, the MPI jobs are managed by the job scheduler
-
-- We don't know in advance what compute nodes will be used until the job is dispatched
-
-- By default, the machine is constructed automatically
-
-    - One may use own machine file if needed (e.g. for benchmark purposes)
-    - Still needs to be compatible with job scheduling
-
-
-# Considerations when running MPI jobs
-
-**Factors:**
-
-- The speed of an MPI job is determined by the slowest process
-
-- Hoffman2 Cluster has different CPU models
-
-
-**Suggested considerations:**
-
-- Use the same/similar CPUs to run the MPI job
-
-- Minimize spreading across nodes (if possible)
-
-
-# Submitting a standard MPI job on Hoffman2 Cluster
-
-Using `-pe dc*` allows the processes to distribute multiple nodes:
-
-```
-#!/bin/bash -l
-#$ -j y
-#$ -o stdout.$JOB_ID
-#$ -l h_data=4G,h_rt=1:00:00
-#$ -pe dc* 32
-#$ -cwd
-
-module load mpich/3.4    # or module load mpich/4.1 etc.
-mpirun -n $SLOTS a.out
-```
-
-# 
-
-Using `-pe shared` ensures all processes to run on ONE compute node:
-
-```
-#!/bin/bash -l
-#$ -j y
-#$ -o stdout.$JOB_ID
-#$ -l h_data=4G,h_rt=1:00:00
-#$ -pe shared 16
-#$ -cwd
-
-module load mpich/3.4
-mpirun -n $SLOTS a.out
-```
-
-Of course, ``(-pe shared)*(h_data)`` cannot exceed a compute node's memory size.
-
-
-# Specifying the CPU types
-
-```
-#!/bin/bash -l
-#$ -j y
-#$ -o stdout.$JOB_ID
-#$ -l h_data=4G,h_rt=24:00:00
-#$ -l arch=intel-E5-*
-#$ -pe dc* 24
-#$ -cwd
-
-module load mpich/3.4
-mpirun -n $SLOTS a.out
-```
-
-
-# Controlling the CPU types and number of processes per node
-
-```
-#!/bin/bash -l
-#$ -j y
-#$ -o stdout.$JOB_ID
-#$ -l h_data=2G,h_rt=24:00:00
-#$ -l arch=intel-E5-*,num_proc=16
-#$ -l exclusive
-#$ -pe dc* 48
-#$ -cwd
-
-module load mpich/3.4
-
-# constructing machinefile: 8 processes per node
-cat $PE_HOSTFILE |  awk '{print $1":8"}' > mach.$JOB_ID
-
-# 8 procs per node for 48/16=3 nodes, so 24 MPI processes
-mpirun -n 24 -machinefile mach.$JOB_ID a.out
-```
-
-
-# `PE_HOSTFILE`
-
-- The environment variable `$PE_HOSTFILE` contains information about node allocation for the parallel job.
-
-- Consider this run:
-
-    ```
-    #!/bin/bash -l
-    #$ -j y
-    #$ -o stdout.$JOB_ID
-    #$ -l h_data=2G,h_rt=1:00:00
-    #$ -pe dc* 48
-    #$ -cwd
-
-    module load mpich/3.4
-    which mpiexec
-
-    cat $PE_HOSTFILE > pehostfile.$JOB_ID
-    ```
-
-#
-
-After the run, we get two files:
-
-```
-$ cat stdout.1380553
-/u/local/apps/mpich/3.4.3/bin/mpiexec
-```
-
-```
-$ cat pehostfile.1380553
-n6365 24 pod_ib56_xgold.q@n6365 <NULL>
-n7005 24 pod_ib56_xgold.q@n7005 <NULL>
-```
-
-# For MPICH/Intel MPI
-
-- Using all allocated cores:
-    
-```
-cat $PE_HOSTFILE | awk '{print $1":"$2}'
-```
-
-would be:
-
-```
-n6365:24
-n7005:24
-```
-
-- Overriding the number of cores (normally with `-l exclusive`, use with care!), e.g.
-
-```
-cat $PE_HOSTFILE | awk '{print $1":8"}'
-```
-would be
-```
-n6365:8
-n7005:8
-```
-
-# For Open MPI
-
-- Using all allocated cores:
-
-```
-cat $PE_HOSTFILE | awk '{print $1" slots="$2}'
-```
-
-```
-n6365 slots=24
-n7005 slots=24
-```
-
-- Overriding the number of cores, (normally with `-l exclusive`, use with care!) e.g.
-
-```
-cat $PE_HOSTFILE | awk '{print $1" slots=8"}'
-```
-
-```
-n6365 slots=8
-n7005 slots=8
-```
 
 
 # Running Python/MPI code
@@ -910,7 +1007,95 @@ mpirun -n 8 julia [some options] mycode.jl
 
 - [OpenMPI FAQ](https://www.open-mpi.org/faq/)
 
-- [Intel 2018/MPI basic](https://www.intel.com/content/www/us/en/developer/articles/technical/tuning-the-intel-mpi-library-basic-techniques.html)
+- [Intel MPI Get Started Guide](https://www.intel.com/content/www/us/en/develop/documentation/get-started-with-mpi-for-linux/top.html)
 
-- [Intel 2018/MPI developer reference (pdf)](https://jp.xlsoft.com/documents/intel/mpi/2018/intelmpi-2018-developer-reference-linux.pdf)
+- [Intel MPI reference guide](https://www.intel.com/content/www/us/en/develop/documentation/mpi-developer-guide-linux/top.html)
+
+
+
+
+
+# UCX: Unified Communication X
+
+![](fig/ucx-architecture.jpg)
+
+source: [openucx.org](https://openucx.org)
+
+
+
+# Intel MPI - OFI/OFA
+
+![](fig/intel2019-switch-to-ofi.png)
+
+source: [intel.com](intel.com)
+
+
+
+
+# Installing MPICH on your computer (example)
+
+[MPICH](https://www.mpich.org/downloads/) on Mac, Linux, or in a Linux Docker container or virtual machine on Windows:
+
+```
+wget http://www.mpich.org/static/downloads/3.4.1/mpich-3.4.1.tar.gz
+tar xfz mpich-3.4.1.tar.gz
+cd mpich-3.4.1
+
+./configure CC=gcc CXX=g++ F77=gfortran
+---prefix=$HOME/sw/mpich \
+--enable-fortran=all --enable-cxx \
+--enable-wrapper-rpath --enable-shared \
+--with-device=ch4
+
+make -j 4
+make install
+```
+
+(Some details may vary depending on your system...)
+
+
+# Installing OpenMPI on your computer (example)
+
+[Open MPI](https://www.open-mpi.org/software/ompi/v4.1/) on Mac, Linux, or in a Linux Docker container or virtual machine on Windows:
+
+```
+wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.2.tar.gz
+
+tar xfz /u/local/downloads/openmpi/openmpi-4.1.2.tar.gz
+cd openmpi-4.1.2
+
+./configure CC=gcc CXX=g++ FC=gfortran \
+            --prefix=$HOME/sw/openmpi \
+             --enable-wrapper-rpath \
+             --enable-orterun-prefix-by-default
+
+make -j 4
+make install
+```
+(Some details may vary depending on your system...)
+
+
+# A note on high-speed networking on HPC clusters
+
+To enable using the high-speed networking on HPC clusters, additional options are needed when building the MPI library.
+
+MPI performance is relatively poor without using the high-speed networking.
+
+- MPICH on Hoffman2 Cluster built with "UCX":
+
+    ```
+    ./configure CC=gcc CXX=g++ FC=gfortran F77=gfortran \
+    ...
+    --with-ucx=/u/local/apps/ucx/1.12 \
+    ```
+
+- OpenMPI on Hoffman2 Cluster built with "UCX":
+
+    ```
+    ./configure CC=gcc CXX=g++ FC=gfortran \
+    --prefix=$INSTALL_DIR \
+    ...
+    --with-sge --without-verbs \
+    --with-ucx=/u/local/apps/ucx/1.12
+    ```
 

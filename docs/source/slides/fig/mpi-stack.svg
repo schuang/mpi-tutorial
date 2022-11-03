@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
-<svg width="28cm" height="17cm" viewBox="199 68 542 323" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="28cm" height="17cm" viewBox="199 59 542 332" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <g>
     <rect style="fill: #ffffff" x="260" y="71" width="160" height="49"/>
     <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="260" y="71" width="160" height="49"/>
-    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="340" y="100.3">
-      <tspan x="340" y="100.3">Your (parallel) code</tspan>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="340" y="100.3">
+      <tspan x="340" y="100.3">Your MPI code</tspan>
     </text>
   </g>
   <g>
     <rect style="fill: #ffffff" x="260" y="160" width="160" height="49"/>
     <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="260" y="160" width="160" height="49"/>
-    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="340" y="189.3">
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="340" y="189.3">
       <tspan x="340" y="189.3">MPI library</tspan>
     </text>
   </g>
   <g>
     <rect style="fill: #ffffff" x="260" y="250" width="160" height="49"/>
     <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="260" y="250" width="160" height="49"/>
-    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="340" y="279.3">
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="340" y="279.3">
       <tspan x="340" y="279.3">network software</tspan>
     </text>
   </g>
   <g>
     <rect style="fill: #ffffff" x="260" y="340" width="160" height="49"/>
     <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="260" y="340" width="160" height="49"/>
-    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="340" y="369.3">
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="340" y="369.3">
       <tspan x="340" y="369.3">network hardware</tspan>
     </text>
   </g>
-  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="430" y="180">
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="430" y="180">
     <tspan x="430" y="180">MPICH, Open MPI,</tspan>
     <tspan x="430" y="196">Intel MPI, etc.</tspan>
   </text>
@@ -54,7 +54,7 @@
     <polygon style="fill: #000000" points="340,337.764 335,327.764 340,330.264 345,327.764 "/>
     <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="340,337.764 335,327.764 340,330.264 345,327.764 "/>
   </g>
-  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="430" y="90">
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="430" y="90">
     <tspan x="430" y="90">PETSc, Hypre and/or</tspan>
     <tspan x="430" y="106">other libraries using MPI</tspan>
   </text>
@@ -66,11 +66,11 @@
     <polygon style="fill: #0000ff" points="565,161 560,151 555,161 "/>
     <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" points="565,161 560,151 555,161 "/>
   </g>
-  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="590" y="110">
-    <tspan x="590" y="110">Your have </tspan>
-    <tspan x="590" y="126">total control</tspan>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="591" y="109">
+    <tspan x="591" y="109">Your have </tspan>
+    <tspan x="591" y="125">total control</tspan>
   </text>
-  <text font-size="12.7998" style="fill: #0000ff;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="570" y="290">
+  <text font-size="12.8" style="fill: #0000ff;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="570" y="290">
     <tspan x="570" y="290">Managed by</tspan>
     <tspan x="570" y="306">system admins</tspan>
   </text>
@@ -79,10 +79,10 @@
     <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" points="395,132.236 390,122.236 385,132.236 "/>
     <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" points="427.764,375 437.764,370 427.764,365 "/>
   </g>
-  <text font-size="12.7998" style="fill: #ff0000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="400" y="140">
+  <text font-size="12.8" style="fill: #ff0000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="400" y="140">
     <tspan x="400" y="140">data</tspan>
   </text>
-  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="450" y="370">
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="450" y="370">
     <tspan x="450" y="370">other processes</tspan>
   </text>
   <g>
@@ -99,8 +99,9 @@
     <polygon style="fill: #7f7f7f" points="585,161 580,151 575,161 "/>
     <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #7f7f7f" points="585,161 580,151 575,161 "/>
   </g>
-  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="590" y="180">
-    <tspan x="590" y="180">You have much</tspan>
-    <tspan x="590" y="196">control</tspan>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="588" y="181">
+    <tspan x="588" y="181">You have some</tspan>
+    <tspan x="588" y="197">control</tspan>
   </text>
+  <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x="571" y="61" width="111" height="165"/>
 </svg>
