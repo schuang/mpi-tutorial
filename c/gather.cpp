@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
     const int N = 20;
     double    *data_coll = NULL;
     double    *data = NULL;
-    char      fn[128];
     int       nproc, rank;
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);

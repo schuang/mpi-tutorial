@@ -8,7 +8,7 @@
 
 int main(int argc, char* argv[])
 {
-  int rank, np, i;
+  int rank, i;
   int x[3];
 
   MPI_Init(&argc, &argv);
